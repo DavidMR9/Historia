@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida al juego hecho para ti</title>
+    <link rel="stylesheet" href="./assent/Style/identificaion.css">
+</head>
+<body>
+    <h1 class="titulo">Bienvenida al juego hecho para ti</h1>
+    <div class="center-message">
+        <label for="doc-input">Introduzca número de documento</label>
+        <br>
+        <input id="doc-input" class="form-input" type="text" placeholder="Número de documento">
+        <br>
+        <button id="ingresar-btn">Ingresar al juego</button>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Reglas del juego</h2>
+            <p>
+                Este juego es para ti, por eso verifico tu identidad. Solo tú puedes ingresar y poco a poco podrás descubrir qué pasará al final.
+            </p>
+            <button id="ir-juego">Ir al juego</button>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('ingresar-btn');
+        const input = document.getElementById('doc-input');
+        const modal = document.getElementById('modal');
+        const irJuego = document.getElementById('ir-juego');
+
+        btn.onclick = function() {
+            if(input.value.trim() === "1035833734") {
+                modal.style.display = "flex";
+            } else {
+                alert("Número de documento incorrecto.");
+            }
+        };
+
+        irJuego.onclick = function() {
+            window.location.href = "you.html";
+        };
+
+        window.addEventListener('keydown', function(e) {
+            if(e.key === "Escape") modal.style.display = "none";
+        });
+    </script>
+</body>
+</html>

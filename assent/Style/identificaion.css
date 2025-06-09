@@ -1,0 +1,104 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #2196f3 0%, #e91e63 100%);
+}
+
+.titulo {
+    color: #fff;
+    font-size: 2.2em;
+    margin-bottom: 1.5em;
+    text-shadow: 0 2px 8px #0003;
+    text-align: center;
+}
+
+.center-message {
+    background: #fff;
+    padding: 2em 2.5em;
+    border-radius: 1em;
+    box-shadow: 0 4px 24px #0002;
+    font-size: 1.2em;
+    color: #2196f3;
+    text-align: center;
+    font-weight: bold;
+    max-width: 90vw;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-input {
+    margin: 1em 0 1em 0;
+    padding: 0.7em 1em;
+    font-size: 1.1em;
+    border-radius: 0.5em;
+    border: 1px solid #2196f3;
+    outline: none;
+    width: 90%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+#ingresar-btn, #ir-juego {
+    padding: 0.7em 2em;
+    font-size: 1.1em;
+    background: linear-gradient(90deg, #2196f3 0%, #e91e63 100%);
+    color: #fff;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: filter 0.2s;
+    margin-top: 1em;
+}
+#ingresar-btn:hover, #ir-juego:hover {
+    filter: brightness(1.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #fff;
+    padding: 2em 2.5em;
+    border-radius: 1em;
+    box-shadow: 0 4px 24px #0003;
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+    box-sizing: border-box;
+}
+.modal-content h2 {
+    color: #e91e63;
+    margin-top: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .titulo {
+        font-size: 1.3em;
+        margin-bottom: 1em;
+    }
+    .center-message, .modal-content {
+        padding: 1em 0.5em;
+        font-size: 1em;
+        border-radius: 0.7em;
+    }
+    .form-input {
+        font-size: 1em;
+        padding: 0.5em 0.7em;
+        max-width: 95vw;
+    }
+    #ingresar-btn, #ir-juego {
+        font-size: 1em;
+        padding: 0.6em 1em;
+    }
+}

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assent/Style/mundo.css">
+    <title>Document</title>
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="main-nav">
+        <div class="nav-left titulo-princesa">Mi Princesa Hermosa</div>
+        <button class="nav-exit" id="btn-exit">Salir</button>
+    </nav>
+
+    <!-- Zona de burbujas -->
+    <div id="bubbles-zone" class="bubbles-zone"></div>
+    <div id="bubble-message" class="bubble-message" style="display:none;"></div>
+
+    <!-- Modal de posdata -->
+    <div id="modal-posdata" class="modal-posdata">
+      <div class="modal-posdata-content">
+        <span class="close-posdata" id="close-posdata">&times;</span>
+        <p>
+          Posdata: Si me dirás algo por que escribí tu nombre mal, lo sé, es algo que quiero hacer para ti, pero a mi modo.
+        </p>
+      </div>
+    </div>
+    <script>
+      let reinicios = 0;
+      let cuentaRegresivaInterval = null;
+
+      window.onload = function() {
+        document.getElementById('modal-posdata').style.display = 'flex';
+        crearBurbujas();
+      };
+      document.getElementById('close-posdata').onclick = function() {
+        document.getElementById('modal-posdata').style.display = 'none';
+      };
+      document.getElementById('btn-exit').onclick = function() {
+        window.location.href = "https://www.google.com/";
+      };
+
+      function crearBurbujas() {
+        const zona = document.getElementById('bubbles-zone');
+        zona.innerHTML = '';
+        let cols, rows, total;
+        if (reinicios >= 4) {
+          cols = rows = 2;
+          total = 4;
+          zona.style.gridTemplateColumns = `repeat(2, 1fr)`;
+          zona.style.gridAutoRows = `60px`;
+        } else if (reinicios >= 3) {
+          cols = rows = 4;
+          total = 16;
+          zona.style.gridTemplateColumns = `repeat(4, 1fr)`;
+          zona.style.gridAutoRows = `60px`;
+        } else {
+          zona.style.gridTemplateColumns = '';
+          zona.style.gridAutoRows = '';
+          const alto = zona.offsetHeight || (window.innerHeight - 120);
+          const ancho = zona.offsetWidth || window.innerWidth;
+          const tam = window.innerWidth < 600 ? 38 : 60;
+          cols = Math.floor(ancho / (tam + 8));
+          rows = Math.floor(alto / (tam + 8));
+          total = Math.max(cols * rows, 24);
+        }
+        let oportunidades = 5;
+        let correcta = Math.floor(Math.random() * total);
+        let terminado = false;
+        const mensaje = document.getElementById('bubble-message');
+        mensaje.style.display = "none";
+        // Elimina cuenta regresiva si existe
+        if (document.getElementById('cuenta-regresiva')) {
+          document.getElementById('cuenta-regresiva').remove();
+        }
+
+        for(let i=0; i<total; i++) {
+          const burbuja = document.createElement('div');
+          burbuja.className = 'bubble-juego';
+          burbuja.dataset.index = i;
+          zona.appendChild(burbuja);
+
+          burbuja.onclick = function() {
+            if (terminado || burbuja.classList.contains('exploded')) return;
+            if (parseInt(burbuja.dataset.index) === correcta) {
+              burbuja.classList.add('exploded');
+              animarCorazones(burbuja);
+              mensaje.innerHTML = "¡Eres increíble! Nunca dejes de creer en ti. 💖";
+              mensaje.style.display = "block";
+              mostrarCuentaRegresiva(mensaje);
+              terminado = true;
+            } else {
+              burbuja.classList.add('exploded');
+              animarCorazones(burbuja);
+              oportunidades--;
+              if (oportunidades > 0) {
+                mensaje.innerHTML = "Vuelve a intentar. Te quedan " + oportunidades + " oportunidades.";
+                mensaje.style.display = "block";
+              } else {
+                reinicios++;
+                if (reinicios >= 4) {
+                  mensaje.innerHTML = "¡Última oportunidad! Solo quedan 4 burbujas.";
+                } else if (reinicios >= 3) {
+                  mensaje.innerHTML = "¡Te quedan menos burbujas! Ahora solo hay 16.";
+                } else {
+                  mensaje.innerHTML = "¡Se acabaron las oportunidades! Reiniciando...";
+                }
+                mensaje.style.display = "block";
+                setTimeout(() => {
+                  crearBurbujas();
+                }, 1500);
+                terminado = true;
+              }
+            }
+          }
+        }
+      }
+
+      function mostrarCuentaRegresiva(mensaje) {
+        // Elimina cuenta regresiva si existe
+        if (document.getElementById('cuenta-regresiva')) {
+          document.getElementById('cuenta-regresiva').remove();
+        }
+        let cuenta = 15;
+        const cuentaDiv = document.createElement('div');
+        cuentaDiv.id = 'cuenta-regresiva';
+        cuentaDiv.style.position = 'absolute';
+        cuentaDiv.style.right = '10px';
+        cuentaDiv.style.top = '10px';
+        cuentaDiv.style.background = 'rgba(255,255,255,0.9)';
+        cuentaDiv.style.color = '#e91e63';
+        cuentaDiv.style.fontWeight = 'bold';
+        cuentaDiv.style.fontSize = '1.3em';
+        cuentaDiv.style.padding = '0.4em 1em';
+        cuentaDiv.style.borderRadius = '1em';
+        cuentaDiv.style.boxShadow = '0 2px 8px #e91e6333';
+        cuentaDiv.innerText = cuenta;
+        mensaje.style.position = 'relative';
+        mensaje.appendChild(cuentaDiv);
+
+        cuentaRegresivaInterval = setInterval(() => {
+          cuenta--;
+          cuentaDiv.innerText = cuenta;
+          if (cuenta <= 0) {
+            clearInterval(cuentaRegresivaInterval);
+            cuentaDiv.remove();
+            animacionCorazonPantalla();
+          }
+        }, 1000);
+      }
+
+      function animarCorazones(burbuja) {
+        for(let i=0; i<6; i++) {
+          let heart = document.createElement('span');
+          heart.className = 'heart-anim';
+          heart.style.left = (50 + Math.random()*40 - 20) + '%';
+          heart.style.animationDelay = (Math.random()*0.3) + 's';
+          burbuja.appendChild(heart);
+        }
+        setTimeout(() => { burbuja.innerHTML = ''; }, 1200);
+      }
+
+      // Animación de corazón explotando en toda la pantalla
+      function animacionCorazonPantalla() {
+        // Crea overlay
+        let overlay = document.createElement('div');
+        overlay.id = 'heart-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = 0;
+        overlay.style.left = 0;
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(255,255,255,0.7)';
+        overlay.style.zIndex = 9999;
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.overflow = 'hidden';
+
+        // Corazón grande
+        let heart = document.createElement('div');
+        heart.className = 'big-heart';
+        overlay.appendChild(heart);
+
+        document.body.appendChild(overlay);
+
+        // Explosión de corazones pequeños después de 1s
+        setTimeout(() => {
+          heart.style.opacity = 0;
+          for(let i=0; i<30; i++) {
+            let mini = document.createElement('span');
+            mini.className = 'mini-heart';
+            mini.style.left = '50vw';
+            mini.style.top = '50vh';
+            overlay.appendChild(mini);
+            setTimeout(() => {
+              mini.style.transform = `translate(${(Math.random()-0.5)*800}px, ${(Math.random()-0.5)*500}px) scale(${0.7+Math.random()*1.2}) rotate(${Math.random()*360}deg)`;
+              mini.style.opacity = 1;
+            }, 10);
+          }
+          setTimeout(() => {
+            overlay.remove();
+            mostrarModalContinuara();
+          }, 1600);
+        }, 1000);
+      }
+
+      // Modal "Continuará"
+      function mostrarModalContinuara() {
+        let modal = document.createElement('div');
+        modal.id = 'modal-continuara';
+        modal.style.position = 'fixed';
+        modal.style.top = 0;
+        modal.style.left = 0;
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.6)';
+        modal.style.zIndex = 10000;
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+
+        let content = document.createElement('div');
+        content.style.background = '#fff';
+        content.style.color = '#e91e63';
+        content.style.padding = '2em 2.5em';
+        content.style.borderRadius = '1em';
+        content.style.boxShadow = '0 4px 24px #0003';
+        content.style.textAlign = 'center';
+        content.style.fontSize = '2em';
+        content.style.fontWeight = 'bold';
+        content.innerText = 'Continuará...';
+
+        let closeBtn = document.createElement('button');
+        closeBtn.innerText = 'Cerrar';
+        closeBtn.style.marginTop = '2em';
+        closeBtn.style.padding = '0.7em 2em';
+        closeBtn.style.fontSize = '1.1em';
+        closeBtn.style.background = 'linear-gradient(90deg, #2196f3 0%, #e91e63 100%)';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '0.5em';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.onclick = function() {
+          window.close();
+          // Si window.close no funciona (por restricciones del navegador), redirige a Google
+          setTimeout(() => { window.location.href = "https://www.google.com/"; }, 300);
+        };
+
+        content.appendChild(closeBtn);
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+      }
+
+      window.addEventListener('resize', () => {
+        crearBurbujas();
+      });
+    </script>
+    <script src="./assent/Script/mundo.js"></script>
+</body>
+</html>
+
+<!-- Agrega este CSS al final de tu mundo.css -->
+<style>
+.big-heart {
+  width: 120px;
+  height: 120px;
+  background: #e91e63;
+  position: relative;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-45deg);
+  animation: big-heart-pop 1s cubic-bezier(.68,-0.55,.27,1.55);
+  box-shadow: 0 8px 32px #e91e6344;
+}
+.big-heart::before,
+.big-heart::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: #e91e63;
+  border-radius: 50% 50% 0 0;
+}
+.big-heart::before {
+  left: -60px;
+  top: 0;
+}
+.big-heart::after {
+  left: 0;
+  top: -60px;
+}
+@keyframes big-heart-pop {
+  0% { transform: scale(0.5) rotate(-45deg); opacity: 0.5;}
+  60% { transform: scale(1.2) rotate(-45deg); opacity: 1;}
+  100% { transform: scale(1) rotate(-45deg); opacity: 1;}
+}
+.mini-heart {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  background: #e91e63;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-45deg) scale(0.7);
+  opacity: 0;
+  box-shadow: 0 2px 8px #e91e6333;
+  transition: transform 1.2s cubic-bezier(.68,-0.55,.27,1.55), opacity 1.2s;
+}
+.mini-heart::before,
+.mini-heart::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: #e91e63;
+  border-radius: 50% 50% 0 0;
+}
+.mini-heart::before {
+  left: -16px;
+  top: 0;
+}
+.mini-heart::after {
+  left: 0;
+  top: -16px;
+}
+</style>
