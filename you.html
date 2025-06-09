@@ -152,6 +152,17 @@
       }
     }
   });
+
+  document.querySelector('.form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const user = document.querySelector('.form-content[type="text"]').value.trim();
+  const pass = document.querySelector('.form-content[type="password"]').value.trim();
+  if (user === "Teamo" && pass === "Darly") {
+    window.location.href = "mundos.html";
+  } else {
+    alert("Usuario o contraseña incorrectos");
+  }
+});
 </script>
 </body>
 </html>
