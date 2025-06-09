@@ -11,7 +11,7 @@
     <div class="center-message">
         <label for="doc-input">Introduzca número de documento</label>
         <br>
-        <input id="doc-input" class="form-input" type="text" placeholder="Número de documento">
+        <input id="doc-input" class="form-input" type="number" placeholder="Número de documento" autocomplete="off">
         <br>
         <button id="ingresar-btn">Ingresar al juego</button>
     </div>
@@ -43,6 +43,10 @@
 
         irJuego.onclick = function() {
             window.location.href = "you.html";
+        };
+
+        modal.onclick = function(e) {
+          if (e.target === modal) modal.style.display = "none";
         };
 
         window.addEventListener('keydown', function(e) {
